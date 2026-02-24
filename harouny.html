@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Crêperie Harouny — Oujda</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0d0a07;
+      --surface: #171109;
+      --card: #1e1509;
+      --gold: #c9962b;
+      --gold-light: #e8b94d;
+      --cream: #f4ead8;
+      --muted: #786450;
+      --border: rgba(201,150,43,0.14);
+      --text: #efe3cc;
+      --input-bg: #120e07;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      background: var(--surface);
+      padding: 60px 24px 44px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .hero-glow {
+      position: absolute;
+      top: -100px; left: 50%;
+      transform: translateX(-50%);
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(201,150,43,0.09) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+    .hero-name {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(3rem, 10vw, 4.4rem);
+      font-weight: 700;
+      color: var(--cream);
+      line-height: 1;
+      letter-spacing: -0.01em;
+    }
+    .hero-name em {
+      display: block;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 0.46em;
+      color: var(--gold-light);
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+    .hero-rule {
+      width: 48px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 20px auto 16px;
+    }
+    .hero-sub {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 400;
+    }
+    .hero-phone {
+      margin-top: 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(201,150,43,0.1);
+      border: 1px solid rgba(201,150,43,0.3);
+      border-radius: 50px;
+      padding: 9px 20px;
+      color: var(--gold-light);
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-decoration: none;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .hero-phone:hover {
+      background: rgba(201,150,43,0.18);
+      border-color: rgba(201,150,43,0.5);
+      color: var(--gold-light);
+    }
+    .hero-phone svg { flex-shrink: 0; }
+
+    /* ── DELIVERY STRIP ── */
+    .delivery-strip {
+      background: var(--gold);
+      color: #0d0a07;
+      text-align: center;
+      padding: 11px 16px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    /* ── STICKY NAV ── */
+    .sticky-nav {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      background: rgba(13,10,7,0.97);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      display: flex;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding: 0 8px;
+    }
+    .nav-inner::-webkit-scrollbar { display: none; }
+    .nav-pill {
+      flex-shrink: 0;
+      padding: 14px 16px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+      white-space: nowrap;
+      user-select: none;
+    }
+    .nav-pill:hover, .nav-pill.active {
+      color: var(--gold);
+      border-bottom-color: var(--gold);
+    }
+
+    /* ── CART BAR ── */
+    .cart-bar {
+      position: sticky;
+      top: 49px;
+      z-index: 800;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+    }
+    .cart-info {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-weight: 400;
+    }
+    .cart-info strong { color: var(--gold-light); font-weight: 600; }
+    .btn-wa {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #1a8a3e;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 9px 18px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s, opacity 0.2s;
+    }
+    .btn-wa:hover { background: #21a84c; }
+    .btn-wa:disabled { opacity: 0.28; cursor: default; background: #1a8a3e; }
+
+    /* ── SECTIONS ── */
+    .menu-section {
+      padding: 46px 20px 0;
+      max-width: 700px;
+      margin: 0 auto;
+      scroll-margin-top: 100px;
+    }
+    .section-label {
+      font-size: 0.63rem;
+      font-weight: 600;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+    .section-title {
+      font-family: 'Fraunces', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--cream);
+      line-height: 1.05;
+      margin-bottom: 22px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── ITEM ── */
+    .item-card {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .item-card:last-child { border-bottom: none; }
+    .item-left { flex: 1; min-width: 0; }
+    .item-name {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--cream);
+      line-height: 1.45;
+    }
+    .item-sub {
+      font-size: 0.73rem;
+      color: var(--muted);
+      margin-top: 5px;
+      line-height: 1.6;
+      font-weight: 300;
+    }
+    .item-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .item-price {
+      font-family: 'Fraunces', serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--gold-light);
+      white-space: nowrap;
+    }
+
+    /* ── COUNTER ── */
+    .counter {
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .counter-btn {
+      width: 32px; height: 28px;
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, color 0.15s;
+    }
+    .counter-btn:hover { background: rgba(201,150,43,0.1); color: var(--gold); }
+    .counter-qty {
+      width: 28px; height: 28px;
+      text-align: center;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--cream);
+      background: var(--surface);
+      line-height: 28px;
+      user-select: none;
+    }
+
+    /* ── MODAL ── */
+    .modal-content {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+    }
+    .modal-header {
+      border-bottom: 1px solid var(--border);
+      padding: 22px 24px 18px;
+    }
+    .modal-title {
+      font-family: 'Fraunces', serif;
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--cream);
+    }
+    .modal-body { padding: 22px 24px; }
+    .modal-footer { border-top: 1px solid var(--border); padding: 16px 24px; }
+    .btn-close { filter: invert(0.5) sepia(1) hue-rotate(5deg); }
+
+    /* ORDER ROWS */
+    .order-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.86rem;
+      gap: 12px;
+    }
+    .order-row:last-child { border: none; }
+    .qty-label { color: var(--muted); margin-right: 5px; }
+    .row-price { color: var(--gold-light); font-weight: 600; white-space: nowrap; flex-shrink: 0; }
+    .order-total {
+      font-family: 'Fraunces', serif;
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--gold);
+      text-align: right;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* FORM */
+    .form-section {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    .form-section-title {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 14px;
+    }
+    .field-group { margin-bottom: 14px; }
+    .field-label {
+      display: block;
+      font-size: 0.73rem;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+    }
+    .field-input {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      color: var(--cream);
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 400;
+      padding: 11px 14px;
+      outline: none;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .field-input::placeholder { color: rgba(120,100,80,0.5); }
+    .field-input:focus { border-color: rgba(201,150,43,0.5); }
+    textarea.field-input { resize: none; min-height: 80px; line-height: 1.5; }
+
+    .btn-send {
+      width: 100%;
+      background: #128C7E;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 14px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-send:hover { background: #075E54; }
+    .field-error {
+      font-size: 0.7rem;
+      color: #e07060;
+      margin-top: 4px;
+      display: none;
+    }
+    .field-error.show { display: block; }
+
+    /* ── FOOTER ── */
+    .footer {
+      max-width: 700px;
+      margin: 56px auto 0;
+      padding: 32px 20px 48px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    .footer-brand {
+      font-family: 'Fraunces', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--cream);
+      margin-bottom: 10px;
+    }
+    .footer-phone-link {
+      display: inline-block;
+      font-size: 1rem;
+      color: var(--gold);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-decoration: none;
+      margin: 8px 0;
+      transition: color 0.2s;
+    }
+    .footer-phone-link:hover { color: var(--gold-light); }
+    .footer-info {
+      font-size: 0.75rem;
+      color: var(--muted);
+      line-height: 2;
+      font-weight: 300;
+      margin-top: 4px;
+    }
+    .footer-credit {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      font-weight: 300;
+    }
+    .footer-credit span {
+      color: var(--gold);
+      font-weight: 500;
+    }
+
+    @keyframes goldflash {
+      0%   { color: var(--gold-light); }
+      45%  { color: #fff9ee; }
+      100% { color: var(--gold-light); }
+    }
+    .flashed { animation: goldflash 0.3s ease; }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-glow"></div>
+  <p class="hero-eyebrow">Crêperie Artisanale &mdash; Oujda</p>
+  <h1 class="hero-name">
+    <em>la</em>
+    Harouny
+  </h1>
+  <div class="hero-rule"></div>
+  <p class="hero-sub">Livraison dans tous les quartiers</p>
+  <a href="tel:+212708282202" class="hero-phone">
+    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+      <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8a19.79 19.79 0 01-3.07-8.7A2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+    </svg>
+    07 08 28 22 02
+  </a>
+</div>
+
+<!-- DELIVERY STRIP -->
+<div class="delivery-strip">
+  Livraison dans tous les quartiers d'Oujda
+</div>
+
+<!-- STICKY NAV -->
+<div class="sticky-nav">
+  <div class="nav-inner" id="nav-inner">
+    <span class="nav-pill active" data-target="sec-classic">Classiques</span>
+    <span class="nav-pill" data-target="sec-fruits">Fruits</span>
+    <span class="nav-pill" data-target="sec-pistache">Pistache</span>
+    <span class="nav-pill" data-target="sec-lotus">Lotus</span>
+    <span class="nav-pill" data-target="sec-boxes">Boxes</span>
+    <span class="nav-pill" data-target="sec-signature">Signature</span>
+  </div>
+</div>
+
+<!-- CART BAR -->
+<div class="cart-bar">
+  <div class="cart-info">
+    <strong id="bar-count">0</strong> article(s) &nbsp;&bull;&nbsp; <strong id="bar-total">0</strong> DH
+  </div>
+  <button class="btn-wa" id="order-btn" onclick="openModal()" disabled>
+    <svg width="14" height="14" fill="white" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.385.832 4.584 2.189 6.348L.757 22.516l4.294-1.376A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.92 0-3.72-.512-5.27-1.404l-.378-.218-3.919 1.256 1.283-3.833-.248-.394A9.955 9.955 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+    Commander
+  </button>
+</div>
+
+<!-- MENU -->
+<div id="menu-root"></div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-brand">Crêperie Harouny</div>
+  <a href="tel:+212708282202" class="footer-phone-link">07 08 28 22 02</a>
+  <div class="footer-info">
+    Livraison dans tous les quartiers d'Oujda<br/>
+    Commande via WhatsApp &mdash; Paiement à la livraison
+  </div>
+  <div class="footer-credit">
+    Designed &amp; built by <span>Suhayb Dawson</span>
+  </div>
+</div>
+
+<!-- ORDER MODAL -->
+<div class="modal fade" id="orderModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="modal-title">Votre Commande</span>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div id="modal-list"></div>
+        <div class="order-total" id="modal-total">Total : 0 DH</div>
+
+        <div class="form-section">
+          <p class="form-section-title">Informations de livraison</p>
+
+          <div class="field-group">
+            <label class="field-label" for="field-name">Nom complet</label>
+            <input class="field-input" id="field-name" type="text" placeholder="Ex: Mohamed Alami" autocomplete="name"/>
+            <p class="field-error" id="err-name">Veuillez entrer votre nom.</p>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="field-address">Adresse de livraison</label>
+            <textarea class="field-input" id="field-address" placeholder="Quartier, rue, numéro..." autocomplete="street-address"></textarea>
+            <p class="field-error" id="err-address">Veuillez entrer votre adresse.</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-send" onclick="sendWhatsApp()">Envoyer via WhatsApp</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const PHONE = '212708282202';
+
+const SECTIONS = [
+  {
+    id: 'sec-classic',
+    label: 'Crêpes',
+    title: 'Classiques',
+    items: [
+      { id: 1,  name: 'Crêpe Nutella',                   price: 13 },
+      { id: 2,  name: 'Crêpe Nutella + Fruits secs',     price: 15 },
+      { id: 3,  name: 'Crêpe Nutella + Banane',          price: 15 },
+      { id: 4,  name: 'Crêpe Nutella + Oreo',            price: 15 },
+      { id: 5,  name: 'Crêpe Nutella + Lotus',           price: 15 },
+      { id: 6,  name: 'Crêpe Nutella + Fraise',          price: 15 },
+    ]
+  },
+  {
+    id: 'sec-fruits',
+    label: 'Fruits',
+    title: 'Nutella & Fruits',
+    items: [
+      { id: 7,  name: 'Nutella + Banane + Fruits secs',            price: 17 },
+      { id: 8,  name: 'Nutella + Fraise + Fruits secs',            price: 17 },
+      { id: 9,  name: 'Nutella + Banane + Fraise + Fruits secs',   price: 20 },
+    ]
+  },
+  {
+    id: 'sec-pistache',
+    label: 'Pistache',
+    title: 'Crème Pistache',
+    items: [
+      { id: 10, name: 'Nutella + Crème Pistache',                                  price: 17 },
+      { id: 11, name: 'Nutella + Crème Pistache + Fruits secs',                    price: 20 },
+      { id: 12, name: 'Nutella + Crème Pistache + Banane ou Fraise',               price: 20 },
+      { id: 13, name: 'Nutella + Crème Pistache + Banane & Fraise',                price: 22 },
+      { id: 14, name: 'Nutella + Crème Pistache + Banane ou Fraise + Fruits secs', price: 23 },
+      { id: 15, name: 'Crêpe Crème Pistache',                                      price: 25 },
+    ]
+  },
+  {
+    id: 'sec-lotus',
+    label: 'Lotus',
+    title: 'Crème Lotus',
+    items: [
+      { id: 16, name: 'Nutella + Crème Lotus',          price: 22 },
+      { id: 17, name: 'Nutella + Crème Lotus + Lotus',  price: 25 },
+      { id: 18, name: 'Crème Lotus + Lotus',            price: 26 },
+    ]
+  },
+  {
+    id: 'sec-boxes',
+    label: 'Boxes',
+    title: 'Les Boxes',
+    items: [
+      { id: 19, name: 'Box 1', price: 22, sub: 'Crêpe · Nutella · Crème Pistache · Crème Lotus · Lotus · Oreo' },
+      { id: 20, name: 'Box 2', price: 22, sub: 'Crêpe · Nutella · Crème Lotus · Lotus · Oreo · Fruits secs' },
+      { id: 21, name: 'Box 3', price: 23, sub: 'Crêpe · Nutella · Crème Pistache · Crème Lotus · Lotus · Oreo · Banane ou Fraise' },
+      { id: 22, name: 'Box 4', price: 25, sub: 'Crêpe · Nutella · Crème Pistache · Crème Lotus · Oreo · Banane ou Fraise · Fruits secs' },
+    ]
+  },
+  {
+    id: 'sec-signature',
+    label: 'Signature',
+    title: 'Boxes Signature',
+    items: [
+      { id: 23, name: 'Box Harouny',         price: 28, sub: 'Nutella · Crème Pistache · Fruits secs · Banane · Kinder · KitKat · Ferrero' },
+      { id: 24, name: 'Box Harouny Pro Max', price: 35, sub: "Nutella · Crème Pistache · Crème Lotus · Fruits secs · Banane ou Fraise · Kinder · KitKat · Ferrero ou Raffaello · Oreo · Lotus · M&M's" },
+    ]
+  }
+];
+
+const cart = {};
+let modalInstance = null;
+
+// BUILD MENU
+const root = document.getElementById('menu-root');
+SECTIONS.forEach(sec => {
+  const wrap = document.createElement('div');
+  wrap.className = 'menu-section';
+  wrap.id = sec.id;
+  wrap.innerHTML = `
+    <p class="section-label">${sec.label}</p>
+    <h2 class="section-title">${sec.title}</h2>
+    <div>
+      ${sec.items.map(item => `
+        <div class="item-card">
+          <div class="item-left">
+            <div class="item-name">${item.name}</div>
+            ${item.sub ? `<div class="item-sub">${item.sub}</div>` : ''}
+          </div>
+          <div class="item-right">
+            <div class="item-price" id="price-${item.id}">${item.price} DH</div>
+            <div class="counter">
+              <button class="counter-btn" onclick="change(${item.id}, -1, '${item.name.replace(/'/g,"\\'")}', ${item.price})">&#8722;</button>
+              <div class="counter-qty" id="qty-${item.id}">0</div>
+              <button class="counter-btn" onclick="change(${item.id}, 1, '${item.name.replace(/'/g,"\\'")}', ${item.price})">&#43;</button>
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  root.appendChild(wrap);
+});
+
+function change(id, delta, name, price) {
+  if (!cart[id]) cart[id] = { name, price, qty: 0 };
+  cart[id].qty = Math.max(0, cart[id].qty + delta);
+  if (cart[id].qty === 0) delete cart[id];
+  document.getElementById(`qty-${id}`).textContent = cart[id] ? cart[id].qty : 0;
+  const priceEl = document.getElementById(`price-${id}`);
+  priceEl.classList.remove('flashed');
+  void priceEl.offsetWidth;
+  priceEl.classList.add('flashed');
+  updateBar();
+}
+
+function updateBar() {
+  const vals = Object.values(cart);
+  const total = vals.reduce((s, i) => s + i.price * i.qty, 0);
+  const count = vals.reduce((s, i) => s + i.qty, 0);
+  document.getElementById('bar-count').textContent = count;
+  document.getElementById('bar-total').textContent = total;
+  document.getElementById('order-btn').disabled = count === 0;
+}
+
+function openModal() {
+  const vals = Object.values(cart);
+  const total = vals.reduce((s, i) => s + i.price * i.qty, 0);
+  document.getElementById('modal-list').innerHTML = vals.map(i => `
+    <div class="order-row">
+      <span><span class="qty-label">${i.qty}&times;</span>${i.name}</span>
+      <span class="row-price">${i.price * i.qty} DH</span>
+    </div>
+  `).join('');
+  document.getElementById('modal-total').textContent = `Total : ${total} DH`;
+  ['field-name','field-address'].forEach(id => {
+    document.getElementById(id).style.borderColor = '';
+  });
+  document.getElementById('err-name').classList.remove('show');
+  document.getElementById('err-address').classList.remove('show');
+
+  modalInstance = new bootstrap.Modal(document.getElementById('orderModal'));
+  modalInstance.show();
+}
+
+function sendWhatsApp() {
+  const name = document.getElementById('field-name').value.trim();
+  const address = document.getElementById('field-address').value.trim();
+
+  let valid = true;
+
+  if (!name) {
+    document.getElementById('err-name').classList.add('show');
+    document.getElementById('field-name').style.borderColor = 'rgba(224,112,96,0.6)';
+    valid = false;
+  } else {
+    document.getElementById('err-name').classList.remove('show');
+    document.getElementById('field-name').style.borderColor = '';
+  }
+
+  if (!address) {
+    document.getElementById('err-address').classList.add('show');
+    document.getElementById('field-address').style.borderColor = 'rgba(224,112,96,0.6)';
+    valid = false;
+  } else {
+    document.getElementById('err-address').classList.remove('show');
+    document.getElementById('field-address').style.borderColor = '';
+  }
+
+  if (!valid) return;
+
+  const vals = Object.values(cart);
+  const total = vals.reduce((s, i) => s + i.price * i.qty, 0);
+
+  let msg = '*Commande — Crêperie Harouny*\n\n';
+  vals.forEach(i => { msg += `${i.qty}x ${i.name} — ${i.price * i.qty} DH\n`; });
+  msg += `\n*Total : ${total} DH*`;
+  msg += `\n\n*Nom :* ${name}`;
+  msg += `\n*Adresse :* ${address}`;
+
+  window.open(`https://wa.me/${PHONE}?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+// NAV SCROLL SPY
+const pills = document.querySelectorAll('.nav-pill');
+pills.forEach(p => {
+  p.addEventListener('click', () => {
+    pills.forEach(x => x.classList.remove('active'));
+    p.classList.add('active');
+    const el = document.getElementById(p.dataset.target);
+    if (el) {
+      const offset = el.getBoundingClientRect().top + window.pageYOffset - 60;
+      window.scrollTo({ top: offset, behavior: 'smooth' });
+    }
+    const navInner = document.getElementById('nav-inner');
+    navInner.scrollTo({ left: p.offsetLeft - (navInner.offsetWidth / 2) + (p.offsetWidth / 2), behavior: 'smooth' });
+  });
+});
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.id;
+      pills.forEach(p => {
+        const isActive = p.dataset.target === id;
+        p.classList.toggle('active', isActive);
+        if (isActive) {
+          const navInner = document.getElementById('nav-inner');
+          navInner.scrollTo({ left: p.offsetLeft - (navInner.offsetWidth / 2) + (p.offsetWidth / 2), behavior: 'smooth' });
+        }
+      });
+    }
+  });
+}, { rootMargin: '-35% 0px -60% 0px' });
+
+SECTIONS.forEach(s => {
+  const el = document.getElementById(s.id);
+  if (el) observer.observe(el);
+});
+</script>
+</body>
+</html>
